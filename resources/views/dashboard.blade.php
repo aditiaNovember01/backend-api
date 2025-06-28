@@ -14,10 +14,10 @@
     </div>
     <div class="card">
         <div class="card-body">
-            Selamat datang di halaman dashboard!
+            <h1>Selamat datang, {{ auth()->user()->name }}</h1>
+            </p </div>
         </div>
-    </div>
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-@endsection
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+    @endsection

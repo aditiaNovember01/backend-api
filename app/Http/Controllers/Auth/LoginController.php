@@ -19,18 +19,12 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
-            $token = $user->createToken('web')->plainTextToken;
-            return response()->json([
-                'message' => 'Login berhasil',
-                'token' => $token,
-                'user' => $user,
-            ]);
+            // Jika login berhasil, redirect ke halaman dashboard
+            return redirect('/dashboard')->with('success', 'Login berhasil!');
         }
 
-        return response()->json([
-            'message' => 'Email atau password salah.'
-        ], 401);
+        // Jika login gagal, kembali ke form login dengan pesan error
+        return back()->withErrors(['email' => 'Email atau password salah.']);
     }
 
     public function handleGoogleCallback()

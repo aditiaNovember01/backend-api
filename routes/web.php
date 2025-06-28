@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\KamarController;
+use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\UlasanController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -28,3 +34,23 @@ Route::get('/register', function () {
 })->name('register');
 
 Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+
+Route::resource('users', UserController::class);
+
+// Reset Password
+Route::get('/password/reset', function () {
+    return view('auth.passwords.email');
+})->name('password.request');
+Route::post('/password/reset', [App\Http\Controllers\Auth\ResetPasswordController::class, 'findEmail'])->name('password.findEmail');
+Route::get('/password/reset/{email}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])->name('password.resetForm');
+Route::post('/password/reset/{email}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
+
+Route::resource('pelanggan', PelangganController::class);
+
+Route::resource('kamar', KamarController::class);
+
+Route::resource('pemesanan', PemesananController::class);
+
+Route::resource('pembayaran', PembayaranController::class);
+
+Route::resource('ulasan', UlasanController::class);

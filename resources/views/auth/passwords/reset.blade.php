@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Reset Password</title>
     <link rel="stylesheet" href="{{ asset('assets/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
 </head>
@@ -13,18 +13,19 @@
     <div class="login-box" style="max-width:400px;margin:40px auto;">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="#" class="h1"><b>Login</b></a>
+                <a href="#" class="h1"><b>Reset Password</b></a>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ url('/login') }}">
+                <form method="POST" action="{{ route('password.update', $email) }}">
                     @csrf
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required autofocus>
+                        <label for="password" class="form-label">Password Baru</label>
+                        <input type="password" class="form-control" id="password" name="password" required autofocus>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                        <input type="password" class="form-control" id="password_confirmation"
+                            name="password_confirmation" required>
                     </div>
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -35,13 +36,10 @@
                             </ul>
                         </div>
                     @endif
-                    <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block w-100">Reset Password</button>
                 </form>
                 <hr>
-                <a href="{{ url('/login/google') }}" class="btn btn-danger btn-block w-100"><i
-                        class="fab fa-google"></i> Login with Google</a>
-                <a href="{{ url('/register') }}" class="btn btn-link w-100">Belum punya akun? Register</a>
-                <a href="{{ url('/password/reset') }}" class="btn btn-link w-100">Lupa kata sandi?</a>
+                <a href="{{ url('/login') }}" class="btn btn-link w-100">Kembali ke Login</a>
             </div>
         </div>
     </div>
