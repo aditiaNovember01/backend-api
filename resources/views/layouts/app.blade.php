@@ -24,11 +24,13 @@
         </div>
         @include('layouts.partials.footer')
     </div>
-    <!-- AdminLTE JS -->
+    <!-- jQuery CDN (tambahan) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/adminlte.min.js') }}"></script>
     @stack('scripts')
+    @yield('scripts')
 </body>
 
 </html>

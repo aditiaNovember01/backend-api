@@ -42,7 +42,18 @@
                                 <td>{{ $p->tanggal_checkout }}</td>
                                 <td>{{ $p->jumlah_tamu }}</td>
                                 <td>{{ number_format($p->total_harga, 0, ',', '.') }}</td>
-                                <td>{{ ucfirst($p->status) }}</td>
+                                <td>
+                                    @php
+                                        $badge = [
+                                            'pending' => 'badge badge-warning',
+                                            'dibayar' => 'badge badge-success',
+                                            'dibatalkan' => 'badge badge-danger',
+                                            'selesai' => 'badge badge-info',
+                                        ];
+                                    @endphp
+                                    <span
+                                        class="{{ $badge[$p->status] ?? 'badge badge-secondary' }}">{{ ucfirst($p->status) }}</span>
+                                </td>
                                 <td>{{ $p->metode_pembayaran }}</td>
                                 <td>
                                     <a href="{{ route('pemesanan.edit', $p->id) }}" class="btn btn-warning btn-sm">Edit</a>

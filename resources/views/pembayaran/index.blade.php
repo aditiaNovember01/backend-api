@@ -36,7 +36,17 @@
                                 <td>{{ $p->pemesanan_id }}</td>
                                 <td>{{ $p->pemesanan->pelanggan->nama_lengkap ?? '-' }}</td>
                                 <td>{{ ucfirst($p->metode) }}</td>
-                                <td>{{ ucfirst($p->status) }}</td>
+                                <td>
+                                    @php
+                                        $badge = [
+                                            'berhasil' => 'badge badge-success',
+                                            'pending' => 'badge badge-warning',
+                                            'gagal' => 'badge badge-danger',
+                                        ];
+                                    @endphp
+                                    <span
+                                        class="{{ $badge[$p->status] ?? 'badge badge-secondary' }}">{{ ucfirst($p->status) }}</span>
+                                </td>
                                 <td>{{ $p->tanggal_transaksi }}</td>
                                 <td>
                                     <a href="{{ route('pembayaran.edit', $p->id) }}" class="btn btn-warning btn-sm">Edit</a>

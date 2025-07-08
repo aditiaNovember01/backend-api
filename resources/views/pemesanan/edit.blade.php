@@ -56,17 +56,6 @@
                             value="{{ $pemesanan->total_harga }}" required>
                     </div>
                     <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
-                        <select class="form-control" id="status" name="status" required>
-                            <option value="dibayar" {{ $pemesanan->status == 'dibayar' ? 'selected' : '' }}>Dibayar
-                            </option>
-                            <option value="dibatalkan" {{ $pemesanan->status == 'dibatalkan' ? 'selected' : '' }}>
-                                Dibatalkan</option>
-                            <option value="selesai" {{ $pemesanan->status == 'selesai' ? 'selected' : '' }}>Selesai
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
                         <label for="metode_pembayaran" class="form-label">Metode Pembayaran</label>
                         <input type="text" class="form-control" id="metode_pembayaran" name="metode_pembayaran"
                             value="{{ $pemesanan->metode_pembayaran }}" required>

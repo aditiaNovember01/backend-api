@@ -27,9 +27,14 @@
                         <select class="form-control" id="kamar_id" name="kamar_id" required>
                             <option value="">-- Pilih Kamar --</option>
                             @foreach ($kamars as $k)
-                                <option value="{{ $k->id }}">{{ $k->jenis_kamar }} (ID: {{ $k->id }})</option>
+                                <option value="{{ $k->id }}" data-harga="{{ $k->harga_per_malam }}">
+                                    {{ $k->jenis_kamar }} (ID: {{ $k->id }})</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="harga_per_malam" class="form-label">Harga per Malam</label>
+                        <input type="number" class="form-control" id="harga_per_malam" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="tanggal_checkin" class="form-label">Tanggal Check-in</label>
@@ -49,13 +54,27 @@
                     </div>
                     <div class="mb-3">
                         <label for="total_harga" class="form-label">Total Harga</label>
-                        <input type="number" class="form-control" id="total_harga" name="total_harga" required
-                            value="{{ old('total_harga') }}">
+                        <input type="number" class="form-control" id="total_harga" name="total_harga" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="metode_pembayaran" class="form-label">Metode Pembayaran</label>
-                        <input type="text" class="form-control" id="metode_pembayaran" name="metode_pembayaran" required
-                            value="{{ old('metode_pembayaran') }}">
+                        <select class="form-control" id="metode_pembayaran" name="metode_pembayaran" required>
+                            <option value="">-- Pilih Metode --</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipe_pembayaran" class="form-label">Tipe Pembayaran</label>
+                        <select class="form-control" id="tipe_pembayaran" name="tipe_pembayaran" required>
+                            <option value="">-- Pilih Tipe --</option>
+                            <option value="lunas">Lunas (Full Payment)</option>
+                            <option value="dp">Bayar di Muka (DP 20%)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jumlah_bayar" class="form-label">Jumlah yang Harus Dibayar</label>
+                        <input type="number" class="form-control" id="jumlah_bayar" name="jumlah_bayar" readonly>
                     </div>
                     @if ($errors->any())
                         <div class="alert alert-danger">
@@ -72,4 +91,46 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function hitungTotalHarga() {
+            const harga = parseInt(document.getElementById('harga_per_malam').value) || 0;
+            const tglCheckin = document.getElementById('tanggal_checkin').value;
+            const tglCheckout = document.getElementById('tanggal_checkout').value;
+            let jumlahMalam = 1;
+            if (tglCheckin && tglCheckout) {
+                const d1 = new Date(tglCheckin);
+                const d2 = new Date(tglCheckout);
+                const diff = (d2 - d1) / (1000 * 60 * 60 * 24);
+                jumlahMalam = diff > 0 ? diff : 1;
+            }
+            const total = harga * jumlahMalam;
+            document.getElementById('total_harga').value = total;
+            hitungJumlahBayar();
+        }
+
+        function hitungJumlahBayar() {
+            const total = parseInt(document.getElementById('total_harga').value) || 0;
+            const tipe = document.getElementById('tipe_pembayaran').value;
+            let bayar = total;
+            if (tipe === 'dp') {
+                bayar = Math.round(total * 0.2);
+            }
+            document.getElementById('jumlah_bayar').value = bayar;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const kamarSelect = document.getElementById('kamar_id');
+            kamarSelect.addEventListener('change', function() {
+                const harga = kamarSelect.options[kamarSelect.selectedIndex].getAttribute('data-harga') ||
+                    0;
+                document.getElementById('harga_per_malam').value = harga;
+                hitungTotalHarga();
+            });
+            document.getElementById('tanggal_checkin').addEventListener('change', hitungTotalHarga);
+            document.getElementById('tanggal_checkout').addEventListener('change', hitungTotalHarga);
+            document.getElementById('tipe_pembayaran').addEventListener('change', hitungJumlahBayar);
+        });
+    </script>
 @endsection

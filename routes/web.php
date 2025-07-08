@@ -54,3 +54,7 @@ Route::resource('pemesanan', PemesananController::class);
 Route::resource('pembayaran', PembayaranController::class);
 
 Route::resource('ulasan', UlasanController::class);
+
+Route::get('/pemesanan/{id}/detail', [App\Http\Controllers\PemesananController::class, 'detail']);
+
+Route::get('/pembayaran/cari-pemesanan/{id}', [App\Http\Controllers\PembayaranController::class, 'cariPemesanan']);

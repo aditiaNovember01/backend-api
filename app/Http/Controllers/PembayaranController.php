@@ -27,8 +27,24 @@ class PembayaranController extends Controller
             'metode' => 'required|in:transfer,kartu,e-wallet',
             'status' => 'required|in:berhasil,pending,gagal',
             'tanggal_transaksi' => 'required|date',
+            'jumlah_bayar' => 'required|numeric|min:1',
         ]);
-        Pembayaran::create($request->all());
+        $pembayaran = Pembayaran::create($request->all());
+        $pemesanan = $pembayaran->pemesanan;
+        // Jika status pemesanan pending (DP), tambahkan jumlah_bayar
+        if ($pemesanan->status === 'pending') {
+            $pemesanan->jumlah_bayar += $request->jumlah_bayar;
+            // Jika sudah lunas, update status jadi dibayar
+            if ($pemesanan->jumlah_bayar >= $pemesanan->total_harga) {
+                $pemesanan->status = 'dibayar';
+            }
+            $pemesanan->save();
+        }
+        // Jika pembayaran berhasil dan status sudah bukan pending, pastikan status dibayar
+        if ($request->status === 'berhasil' && $pemesanan->status !== 'pending') {
+            $pemesanan->status = 'dibayar';
+            $pemesanan->save();
+        }
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil ditambahkan');
     }
 
@@ -49,6 +65,11 @@ class PembayaranController extends Controller
             'tanggal_transaksi' => 'required|date',
         ]);
         $pembayaran->update($request->all());
+        // Update status pemesanan jika pembayaran berhasil
+        if ($request->status === 'berhasil') {
+            $pembayaran->pemesanan->status = 'dibayar';
+            $pembayaran->pemesanan->save();
+        }
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil diupdate');
     }
 
@@ -57,5 +78,24 @@ class PembayaranController extends Controller
         $pembayaran = Pembayaran::findOrFail($id);
         $pembayaran->delete();
         return redirect()->route('pembayaran.index')->with('success', 'Pembayaran berhasil dihapus');
+    }
+
+    public function detail($id)
+    {
+        $pemesanan = \App\Models\Pemesanan::with(['pelanggan', 'kamar'])->find($id);
+        if (!$pemesanan) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+        return response()->json($pemesanan);
+    }
+
+    // Method untuk mengambil detail pemesanan (AJAX)
+    public function cariPemesanan($id)
+    {
+        $pemesanan = \App\Models\Pemesanan::with(['pelanggan', 'kamar'])->find($id);
+        if (!$pemesanan) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+        return response()->json($pemesanan);
     }
 }
